@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-01-28 01:30:14">
+<Class name="Habr.ArticlesEnumerationPage">
+<Description>
+Contains information from pages of Intersystems
+blog on habr (https://habrahabr.ru/company/intersystems/)</Description>
+<Super>Habr.Page</Super>
+<TimeChanged>63945,2471.709479</TimeChanged>
+<TimeCreated>63943,77676.654674</TimeCreated>
+
+<Method name="hasNext">
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	s delimiter = "<li><a title=""На страницу вперед (Alt + &rarr;)"" class=""next"" id=""next_page"" href=""/company/intersystems/"
+	s pos = ..Html.FindAt( 1, delimiter )
+	if ( pos = -1 ) Q 0
+	QUIT $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="findAllReferences">
+<Description>
+This pages (habrahabr.ru/company/intersystems/page*/) 
+contain links to intersystems's articles. Purpose of
+this method - find them all</Description>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s delimiter = "shortcuts_item"" id=""post_"
+	s currentPos = ..Html.FindAt( 1, delimiter )
+
+	while ( currentPos '= -1 )
+	{
+		s sc = ..Html.MoveTo( currentPos + $length( delimiter ) )
+		s ref = ..Html.Read( 6 )
+		s $LIST( listOfRefs, *+1 ) = ref	
+		s currentPos = ..Html.FindAt( currentPos + 1, delimiter )
+	}
+	
+	Q $LISTTOSTRING( listOfRefs, "  " )
+]]></Implementation>
+</Method>
+</Class>
+</Export>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-01-28 01:29:48">
+<Class name="Habr.Page">
+<Description>
+Load information from habrahabr's page</Description>
+<Super>%RegisteredObject</Super>
+<TimeChanged>63945,2217.211825</TimeChanged>
+<TimeCreated>63943,484.885261</TimeCreated>
+
+<Property name="pageURL">
+<Description>
+URL of current page</Description>
+<Type>%String</Type>
+</Property>
+
+<Property name="request">
+<Description>
+Wrapper for %Net.HttpRequest</Description>
+<Type>Http.Request</Type>
+<Private>1</Private>
+</Property>
+
+<Property name="Html">
+<Description>
+Html content of current page</Description>
+<Type>%Stream</Type>
+<Private>1</Private>
+<ReadOnly>1</ReadOnly>
+</Property>
+
+<Parameter name="SERVER">
+<Description>
+Server page</Description>
+<Default>habrahabr.ru</Default>
+</Parameter>
+
+<Method name="%OnNew">
+<Description>
+Load page content</Description>
+<FormalSpec>pageNum=1</FormalSpec>
+<Private>1</Private>
+<ReturnType>%Status</ReturnType>
+<ServerOnly>1</ServerOnly>
+<Implementation><![CDATA[
+	s ..pageURL = "/company/intersystems/page" _ pageNum _ "/"
+	s ..request = ##class(Http.Request).%New( ..#SERVER )
+	s sc = ..request.Get( ..pageURL ) Q:'sc sc
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="HtmlGet">
+<Description>
+Html getter</Description>
+<Private>1</Private>
+<ReturnType>%Stream</ReturnType>
+<Implementation><![CDATA[
+	Q:'$IsObject( ..request ) ""
+	Q ..request.Data
+]]></Implementation>
+</Method>
+</Class>
+</Export>

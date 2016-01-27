@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-01-28 01:29:26">
+<Class name="Habr.Crawler">
+<Description>
+Simple crawler </Description>
+<Super>%RegisteredObject</Super>
+<TimeChanged>63945,3664.694326</TimeChanged>
+<TimeCreated>63942,80784.293177</TimeCreated>
+
+<Property name="listOfArticles">
+<Type>%List</Type>
+<Private>1</Private>
+</Property>
+
+<Method name="scanBlog">
+<Description>
+Crawl habr blog, find all links to articles</Description>
+<Private>1</Private>
+<Implementation><![CDATA[
+	for i=1:1 {
+		s curPage = ##class(Habr.ArticlesEnumerationPage).%New( i )
+		s $LIST( listOfRefs, *+1 ) = curPage.findAllReferences()
+		Q:curPage.hasNext()=0
+	}
+	
+	s str = $LISTTOSTRING( listOfRefs, "  " )
+	s ..listOfArticles = $LISTFROMSTRING( str, "  " )
+	w "Amount of articles: " _ $LL( ..listOfArticles ), !
+]]></Implementation>
+</Method>
+
+<Method name="run">
+<Implementation><![CDATA[
+	do ..scanBlog()
+	
+	for i=1:1:$LL( ..listOfArticles ) {
+		s curPage = ##class(Habr.ArticlePage).%New( $LIST( ..listOfArticles, i ) )
+		d curPage.getData()
+	}
+]]></Implementation>
+</Method>
+</Class>
+</Export>

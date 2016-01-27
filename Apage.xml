@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-01-28 01:30:32">
+<Class name="Habr.ArticlePage">
+<Description>
+Contains information from pages with Intersystems
+articles (https://habrahabr.ru/company/intersystems/blog/******/)</Description>
+<Super>Habr.Page</Super>
+<TimeChanged>63945,3802.203833</TimeChanged>
+<TimeCreated>63943,85597.038892</TimeCreated>
+
+<Property name="article">
+<Type>%String</Type>
+</Property>
+
+<Property name="author">
+<Type>%String</Type>
+</Property>
+
+<Property name="date">
+<Type>%Date</Type>
+</Property>
+
+<Property name="views">
+<Type>%Integer</Type>
+</Property>
+
+<Property name="favorites">
+<Type>%Integer</Type>
+</Property>
+
+<Method name="%OnNew">
+<Description>
+Load page content from habr + find all valuable information for analysis</Description>
+<FormalSpec>articleNum</FormalSpec>
+<Private>1</Private>
+<ReturnType>%Status</ReturnType>
+<ServerOnly>1</ServerOnly>
+<Implementation><![CDATA[
+	s ..pageURL = "/company/intersystems/blog/" _ articleNum _ "/"
+	s ..request = ##class(Http.Request).%New( ..#SERVER )
+	s sc = ..request.Get( ..pageURL ) Q:'sc sc
+	d ..parseHTML()
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="getFromHtml">
+<Description><![CDATA[
+Find information among tags (lDelim, rDelim)
+<lDelim> interesting information </rDelim>]]></Description>
+<FormalSpec>lDelim,rDelim,start=1</FormalSpec>
+<Private>1</Private>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s from = ..Html.FindAt( start, lDelim ) + $LENGTH( lDelim )
+	s to = ..Html.FindAt( from, rDelim )
+	s sc = ..Html.MoveTo( from )
+	s res = ..Html.Read( to - from )
+	Q res
+]]></Implementation>
+</Method>
+
+<Method name="parseDate">
+<Description>
+Convert extracted date expression to Cache date type</Description>
+<FormalSpec>dtexpr:%String</FormalSpec>
+<Private>1</Private>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s date = $zstrip( dtexpr, "<>WC" )
+	s months = " января февраля марта апреля мая июня июля августа сентября октября ноября декабря"
+	s dateh = $zdh( date, 2, months, 3, 58074 ) 
+	Q dateh
+]]></Implementation>
+</Method>
+
+<Method name="parseViews">
+<Description>
+Convert extracted views amount expression to integer type
+1,3k = 1300</Description>
+<FormalSpec>vexpr:%String</FormalSpec>
+<Private>1</Private>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+	if $f( vexpr, "k" ) {
+		s $e( vexpr, $f( vexpr, "," ) - 1) = "."
+		Q $e( vexpr, 1, $l( vexpr ) - 1) * 1000	
+	}
+	Q vexpr
+]]></Implementation>
+</Method>
+
+<Method name="parseHTML">
+<Description>
+Find all valuable information for articles analysis from current page</Description>
+<Private>1</Private>
+<Implementation><![CDATA[
+	s ..article = ..getFromHtml( "<title>", "/ Блог компании InterSystems / Хабрахабр</title>" )
+	
+	s date = ..getFromHtml( "<div class=""published"">", " в " )
+	s ..date = ..parseDate( date )
+	
+	s views = ..getFromHtml( "<div class=""views-count_post"" title=""Просмотры публикации"">", "</div>" )
+	s ..views = ..parseViews( views )
+	
+	s ..favorites = ..getFromHtml( "<span class=""favorite-wjt__counter js-favs_count"" title=""Количество пользователей, добавивших публикацию в избранное"">", "</span>" )
+	
+	set delim = "<span class=""post-type__label post-type__label_author"">Автор:</span>"
+	s start = ..Html.FindAt( 1, delim )
+	s ..author = ..getFromHtml( """>@", "</a>", start + $LENGTH( delim ) )
+]]></Implementation>
+</Method>
+
+<Method name="getData">
+<Description>
+TODO: redirect output to file
+Get information about current article</Description>
+<Implementation><![CDATA[	w """" _ ..article _ """ (" _ $zd(..date) _ ") by " _ ..author _ " - " _ ..views, !
+]]></Implementation>
+</Method>
+</Class>
+</Export>
