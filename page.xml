@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-01-28 01:29:48">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-03-08 07:50:53">
 <Class name="Habr.Page">
 <Description>
 Load information from habrahabr's page</Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>63945,2217.211825</TimeChanged>
+<TimeChanged>63985,7640.015305</TimeChanged>
 <TimeCreated>63943,484.885261</TimeCreated>
 
 <Property name="pageURL">
@@ -52,7 +52,6 @@ Load page content</Description>
 <Method name="HtmlGet">
 <Description>
 Html getter</Description>
-<Private>1</Private>
 <ReturnType>%Stream</ReturnType>
 <Implementation><![CDATA[
 	Q:'$IsObject( ..request ) ""

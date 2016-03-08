@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-01-28 01:31:04">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-03-08 07:51:01">
 <Class name="Http.Request">
 <Description>
 Adaptor for %Net.HttpRequest
@@ -9,7 +9,7 @@ in v2015.2 property .HttpResponse.Data has type %Stream.FileCharacterGzip
 
 %Stream.FileCharacterGzip perhaps has a bug in the method ReadLine()</Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>63942,78313.106972</TimeChanged>
+<TimeChanged>63985,7570.653134</TimeChanged>
 <TimeCreated>63798,63618.58211</TimeCreated>
 
 <Property name="request">
@@ -53,6 +53,8 @@ class then this oref will be the one returned to the caller of %New method.]]></
 <Implementation><![CDATA[
 	s ..request = ##class(%Net.HttpRequest).%New()
 	s ..request.Server = server
+	s ..request.Https = 1
+	s ..request.SSLConfiguration = "11"
 	s ..Data = ##class(%Stream.FileCharacter).%New()
 	
 	Quit $$$OK

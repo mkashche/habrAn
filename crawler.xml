@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-01-28 01:29:26">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-03-08 07:51:07">
 <Class name="Habr.Crawler">
 <Description>
 Simple crawler </Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>63945,3664.694326</TimeChanged>
+<TimeChanged>63985,25853.813918</TimeChanged>
 <TimeCreated>63942,80784.293177</TimeCreated>
 
 <Property name="listOfArticles">
 <Type>%List</Type>
 <Private>1</Private>
 </Property>
+
+<Method name="update">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	s crawler = ##class(Habr.Crawler).%New()
+	d crawler.run()
+]]></Implementation>
+</Method>
 
 <Method name="scanBlog">
 <Description>
@@ -25,7 +33,6 @@ Crawl habr blog, find all links to articles</Description>
 	
 	s str = $LISTTOSTRING( listOfRefs, "  " )
 	s ..listOfArticles = $LISTFROMSTRING( str, "  " )
-	w "Amount of articles: " _ $LL( ..listOfArticles ), !
 ]]></Implementation>
 </Method>
 
@@ -34,8 +41,23 @@ Crawl habr blog, find all links to articles</Description>
 	do ..scanBlog()
 	
 	for i=1:1:$LL( ..listOfArticles ) {
-		s curPage = ##class(Habr.ArticlePage).%New( $LIST( ..listOfArticles, i ) )
-		d curPage.getData()
+		if ( $LIST( ..listOfArticles, i ) '= "") {
+			s curPage = ##class(Habr.ArticlePage).%New( $LIST( ..listOfArticles, i ) )
+			s paramList = curPage.getData()
+			set habrId = $list(paramList, 1)
+			
+			if (##class(habrAnalytics.ArticleGeneralInfo).%ExistsId(habrId) = 0) {  				
+   				set row = ##class(habrAnalytics.ArticleGeneralInfo).%New(.paramList)			
+			} else {
+				set row = ##class(habrAnalytics.ArticleGeneralInfo).%OpenId(habrId)
+				do row.update(.paramList)
+			}
+				
+			set st = row.%Save()
+   			do $System.Status.DisplayError(st)
+						
+   				
+		}
 	}
 ]]></Implementation>
 </Method>

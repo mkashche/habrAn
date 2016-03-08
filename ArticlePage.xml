@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-03-08 07:50:42">
+<Class name="Habr.ArticlePage">
+<Description>
+Contains information from pages with Intersystems
+articles (https://habrahabr.ru/company/intersystems/blog/******/)</Description>
+<Super>Habr.Page</Super>
+<TimeChanged>63985,26764.188837</TimeChanged>
+<TimeCreated>63943,85597.038892</TimeCreated>
+
+<Property name="habrID">
+<Type>%Integer</Type>
+</Property>
+
+<Property name="article">
+<Type>%String</Type>
+</Property>
+
+<Property name="author">
+<Type>%String</Type>
+</Property>
+
+<Property name="date">
+<Type>%Date</Type>
+</Property>
+
+<Property name="views">
+<Type>%Integer</Type>
+</Property>
+
+<Property name="favorites">
+<Type>%Integer</Type>
+</Property>
+
+<Property name="comments">
+<Type>%Integer</Type>
+</Property>
+
+<Property name="votesPlus">
+<Type>%Integer</Type>
+</Property>
+
+<Property name="votesMinus">
+<Type>%Integer</Type>
+</Property>
+
+<Property name="votes">
+<Type>%Integer</Type>
+</Property>
+
+<Property name="appraisal">
+<Type>%Integer</Type>
+</Property>
+
+<Property name="hubs">
+<Type>%List</Type>
+</Property>
+
+<Method name="%OnNew">
+<Description>
+Load page content from habr + find all valuable information for analysis</Description>
+<FormalSpec>articleNum</FormalSpec>
+<Private>1</Private>
+<ReturnType>%Status</ReturnType>
+<ServerOnly>1</ServerOnly>
+<Implementation><![CDATA[
+	s ..habrID = articleNum
+	s ..pageURL = "/company/intersystems/blog/" _ articleNum _ "/"
+	s ..request = ##class(Http.Request).%New( ..#SERVER )
+	s sc = ..request.Get( ..pageURL ) Q:'sc sc
+	d ..parseHTML()
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="getFromHtml">
+<Description><![CDATA[
+Find information among tags (lDelim, rDelim)
+<lDelim> interesting information </rDelim>]]></Description>
+<FormalSpec>lDelim,rDelim,start=1</FormalSpec>
+<Private>1</Private>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s from = ..Html.FindAt( start, lDelim ) + $LENGTH( lDelim )
+	s to = ..Html.FindAt( from, rDelim )
+	s sc = ..Html.MoveTo( from )
+	s res = ..Html.Read( to - from )
+	Q res
+]]></Implementation>
+</Method>
+
+<Method name="parseDate">
+<Description>
+Convert extracted date expression to Cache date type</Description>
+<Private>1</Private>
+<Implementation><![CDATA[
+	s dtexpr = ..getFromHtml( "<div class=""published"">", " в " )
+	s date = $zstrip( dtexpr, "<>WC" ) 
+	if (date = "сегодня") {
+		set dateh = +$now(-180)
+	} elseif (date = "вчера") {
+		set dateh = +$now(-180)-1
+	} else { 
+		if ($piece(date," ",3) = "") {
+			set date = date_" "_$piece($zdt(+$now(-180),3),"-",1)
+		} 
+
+		s months = " января февраля марта апреля мая июня июля августа сентября октября ноября декабря" 
+		s dateh = $zdh( date, 2, months ) 
+	} 
+	s ..date = dateh
+]]></Implementation>
+</Method>
+
+<Method name="parseViews">
+<Description>
+Convert extracted views amount expression to integer type
+1,3k = 1300</Description>
+<Private>1</Private>
+<Implementation><![CDATA[
+	s vexpr = ..getFromHtml( "<div class=""views-count_post"" title=""Просмотры публикации"">", "</div>" )
+	if $f( vexpr, "k" ) {
+		s $e( vexpr, $f( vexpr, "," ) - 1) = "."
+		s ..views = $e( vexpr, 1, $l( vexpr ) - 1) * 1000	
+	} else {
+		s ..views = vexpr
+	}
+]]></Implementation>
+</Method>
+
+<Method name="parseVotes">
+<Private>1</Private>
+<Implementation><![CDATA[
+	s vexpr = ..getFromHtml( "<span class=""voting-wjt__counter-score js-score"" title=""Общий рейтинг ", "</span>")
+	s ..votes = $e( vexpr, 1, $f( vexpr, ": &uarr;" ) - $l( ": &uarr;" ) - 1)
+	s ..votesPlus = $e( vexpr, $f( vexpr, ": &uarr;" ), $f( vexpr, "и &darr;" ) - $l( "и &darr;" ) - 1 )
+	s ..votesMinus = ..votes - ..votesPlus
+	s ..appraisal = ..votesPlus - ..votesMinus
+]]></Implementation>
+</Method>
+
+<Method name="parseHubs">
+<Private>1</Private>
+<Implementation><![CDATA[
+	s delim = "class=""hub "" title=""Вы не подписаны на этот хаб"" >"
+	s listOfHubs = $LISTBUILD("")
+	s currentPos = ..Html.FindAt( 1, delim ) 
+	
+	while ( currentPos '= -1 )
+	{
+		s ref = ..getFromHtml(delim, "</a>", currentPos)
+		s $LIST( listOfRefs, *+1 ) = ref
+		s sc = ..Html.MoveTo( currentPos + $length( delim ) )	
+		s currentPos = ..Html.FindAt( currentPos + 1, delim )
+	}
+	
+	s ..hubs = listOfRefs
+]]></Implementation>
+</Method>
+
+<Method name="parseHTML">
+<Description>
+Find all valuable information for articles analysis from current page</Description>
+<Private>1</Private>
+<Implementation><![CDATA[
+	s ..article = ..getFromHtml( "<title>", "/ Блог компании InterSystems / Хабрахабр</title>" )
+
+	d ..parseHubs()
+	d ..parseDate()
+	d ..parseViews()
+	
+	s ..favorites = ..getFromHtml( "<span class=""favorite-wjt__counter js-favs_count"" title=""Количество пользователей, добавивших публикацию в избранное"">", "</span>" )
+	
+	s delim = "<span class=""post-type__label post-type__label_author"">Автор:</span>"
+	s start = ..Html.FindAt( 1, delim )
+	s ..author = ..getFromHtml( """>@", "</a>", start + $LENGTH( delim ) )
+	
+	s ..comments = ..getFromHtml( "id=""comments_count"">", "</span>)" )
+	d ..parseVotes()
+]]></Implementation>
+</Method>
+
+<Method name="getData">
+<Description>
+TODO: redirect output to file
+Get information about current article</Description>
+<ReturnType>%List</ReturnType>
+<Implementation><![CDATA[
+	s $LIST( listOfParameters, 1 ) = ..habrID
+	s $LIST( listOfParameters, 2 ) = ..#SERVER _ ..pageURL
+	s $LIST( listOfParameters, 3 ) = ..article
+	s $LIST( listOfParameters, 4 ) = ..author
+	s $LIST( listOfParameters, 5 ) = ..hubs
+	s $LIST( listOfParameters, 6 ) = ..date
+	s $LIST( listOfParameters, 7 ) = ..date
+	s $LIST( listOfParameters, 8 ) = ..appraisal
+	s $LIST( listOfParameters, 9 ) = ..votesPlus
+	s $LIST( listOfParameters, 10 ) = ..votesMinus
+	s $LIST( listOfParameters, 11 ) = ..votes
+	s $LIST( listOfParameters, 12 ) = ..comments
+	s $LIST( listOfParameters, 13 ) = ..favorites
+	s $LIST( listOfParameters, 14 ) = ..views
+	Q listOfParameters
+]]></Implementation>
+</Method>
+</Class>
+</Export>

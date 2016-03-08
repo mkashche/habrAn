@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-01-28 01:30:14">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2015.1 (Build 419U)" ts="2016-03-08 07:50:47">
 <Class name="Habr.ArticlesEnumerationPage">
 <Description>
 Contains information from pages of Intersystems
 blog on habr (https://habrahabr.ru/company/intersystems/)</Description>
 <Super>Habr.Page</Super>
-<TimeChanged>63945,2471.709479</TimeChanged>
+<TimeChanged>63985,8634.400454</TimeChanged>
 <TimeCreated>63943,77676.654674</TimeCreated>
 
 <Method name="hasNext">
@@ -27,6 +27,7 @@ this method - find them all</Description>
 <Implementation><![CDATA[
 	s delimiter = "shortcuts_item"" id=""post_"
 	s currentPos = ..Html.FindAt( 1, delimiter )
+	s listOfRefs = $LISTBUILD("")
 
 	while ( currentPos '= -1 )
 	{
