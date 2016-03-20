@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (SUSE Linux Enterprise Server for x86-64) 2015.3 (Build 211U)" ts="2016-03-20 23:41:57">
+<Class name="habraCubes.ArticleStatistics">
+<Description>
+2</Description>
+<ProcedureBlock>1</ProcedureBlock>
+<Super>%DeepSee.CubeDefinition</Super>
+<TimeChanged>63997,75700.991111</TimeChanged>
+<TimeCreated>63767,67353.203302</TimeCreated>
+<DependsOn>habrAnalytics.ArticleStatistics</DependsOn>
+
+<XData name="Cube">
+<Description>
+Cube definition from Architect.</Description>
+<XMLNamespace>http://www.intersystems.com/deepsee</XMLNamespace>
+<Data><![CDATA[
+<cube xmlns="http://www.intersystems.com/deepsee" name="ArticleStatistics" displayName="ArticleStatistics" disabled="false" abstract="false" sourceClass="habrAnalytics.ArticleStatistics" countMeasureName="%COUNT" bucketSize="8" bitmapChunkInMemory="false" precompute="0" disableListingGroups="false">
+  <dimension name="author" displayName="Автор" disabled="false" hasAll="false" allCaption="All author" allDisplayName="author" type="data" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="author" displayName="автор" disabled="false" sourceProperty="article.author" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+      <level name="habrId" displayName="название статьи" disabled="false" sourceProperty="article.habrId" list="false" useDisplayValue="true" useAsFilter="true">
+        <property name="name" displayName="название статьи" disabled="false" sourceExpression="$e(%source.article.name,1,25)" hidden="false" isName="true" isDescription="false" isReference="false" useDisplayValue="true">
+        </property>
+      </level>
+    </hierarchy>
+  </dimension>
+  <dimension name="hubs" displayName="Хабы" disabled="false" hasAll="false" allCaption="All hubs" allDisplayName="hubs" type="data" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="hubs" displayName="хабы" disabled="false" sourceProperty="article.hubs" list="true" useDisplayValue="true" useAsFilter="true">
+      </level>
+    </hierarchy>
+  </dimension>
+  <dimension name="dateOfPublication" displayName="Дата публикации" disabled="false" hasAll="false" allCaption="All dateOfPublication" allDisplayName="dateOfPublication" sourceProperty="article.dateOfPublication" type="time" calendar="gregorian" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="dateOfPublication" displayName="год" disabled="false" timeFunction="Year" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+      <level name="dateOfPublication1" displayName="месяц" disabled="false" timeFunction="MonthNumber" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+      <level name="dateOfPublication2" displayName="день" disabled="false" timeFunction="DayNumber" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+    </hierarchy>
+  </dimension>
+  <dimension name="dateOfImport" displayName="Дата измерения показателей" disabled="false" hasAll="false" allCaption="All dateOfImport" allDisplayName="dateOfImport" sourceProperty="dateOfImport" type="time" calendar="gregorian" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="dateOfImport" displayName="год" disabled="false" timeFunction="Year" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+      <level name="dateOfImport1" displayName="месяц" disabled="false" timeFunction="MonthNumber" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+      <level name="dateOfImport2" displayName="день" disabled="false" timeFunction="DayNumber" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+    </hierarchy>
+  </dimension>
+  <dimension name="habrId" displayName="Название статьи" disabled="false" hasAll="false" allCaption="All habrId" allDisplayName="habrId" type="data" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" displayName="Название статьи" disabled="false">
+      <level name="habrId" displayName="название статьи" disabled="false" sourceProperty="article.habrId" list="false" useDisplayValue="true" useAsFilter="true">
+        <property name="name" displayName="название статьи" disabled="false" sourceExpression="$e(%source.article.name,1,25)" hidden="false" isName="true" isDescription="false" isReference="false" useDisplayValue="true">
+        </property>
+      </level>
+    </hierarchy>
+  </dimension>
+  <dimension name="DMYOfImport" disabled="false" hasAll="true" allCaption="All dateOfImport1" allDisplayName="dateOfImport1" sourceProperty="dateOfImport" type="time" calendar="gregorian" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="dateOfImport" disabled="false" timeFunction="DayMonthYear" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+    </hierarchy>
+    <hierarchy name="H2" disabled="false">
+      <level name="MonthYear" disabled="false" timeFunction="MonthYear" list="false" useDisplayValue="true" useAsFilter="true">
+        <additionalDescription>undefined</additionalDescription>
+      </level>
+    </hierarchy>
+    <hierarchy name="H3" disabled="false">
+      <level name="Year" disabled="false" timeFunction="Year" list="false" useDisplayValue="true" useAsFilter="true">
+        <additionalDescription>undefined</additionalDescription>
+      </level>
+    </hierarchy>
+    <additionalDescription>undefined</additionalDescription>
+  </dimension>
+  <measure name="views" displayName="количество просмотров" disabled="false" sourceProperty="views" aggregate="SUM" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="rating" displayName="рейтинг" disabled="false" sourceProperty="rating" aggregate="SUM" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="votes" displayName="количество голосов" disabled="false" sourceProperty="votes" aggregate="SUM" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="comments" displayName="количество комментариев" disabled="false" sourceProperty="comments" aggregate="SUM" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="favorites" displayName="избранное" disabled="false" sourceProperty="favorites" aggregate="SUM" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="votesMinus" displayName="голосов против" disabled="false" sourceProperty="votesMinus" aggregate="SUM" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="votesPlus" displayName="голосов за" disabled="false" sourceProperty="votesPlus" aggregate="SUM" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="views1" displayName="просмотры (тыс.)" disabled="false" sourceExpression="%source.views / 1000" aggregate="SUM" type="number" hidden="false" searchable="false" iKnowSource="string">
+    <additionalDescription>undefined</additionalDescription>
+  </measure>
+  <listing name="список" disabled="false" listingType="map" fieldList="views,article-&gt;url,article-&gt;name,article-&gt;dateOfPublication" orderBy="(-1) * views">
+  </listing>
+</cube>
+]]></Data>
+</XData>
+
+<Method name="GetArticlesAmount">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	set result = 0
+	set sql = "Select Count(Distinct article) As Amount From HabrAnalytics.ArticleStatistics"
+	set rs = ##class(%SQL.Statement).%ExecDirect(,sql) //date
+	if rs.%Next(){
+		set result = rs.Amount
+	}
+	Quit result
+]]></Implementation>
+</Method>
+
+<Parameter name="DOMAIN"/>
+</Class>
+</Export>

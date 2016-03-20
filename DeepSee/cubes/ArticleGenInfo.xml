@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for UNIX (SUSE Linux Enterprise Server for x86-64) 2015.3 (Build 211U)" ts="2016-03-20 23:41:48">
+<Class name="habraCubes.ArticleGenInfo">
+<Description>
+1</Description>
+<ProcedureBlock>1</ProcedureBlock>
+<Super>%DeepSee.CubeDefinition</Super>
+<TimeChanged>63997,72462.051653</TimeChanged>
+<TimeCreated>63768,58609.500429</TimeCreated>
+<DependsOn>habrAnalytics.ArticleGeneralInfo</DependsOn>
+
+<XData name="Cube">
+<Description>
+Cube definition from Architect.</Description>
+<XMLNamespace>http://www.intersystems.com/deepsee</XMLNamespace>
+<Data><![CDATA[
+<cube xmlns="http://www.intersystems.com/deepsee" name="ArticleGenInfo" displayName="ArticleGenInfo" disabled="false" abstract="false" sourceClass="habrAnalytics.ArticleGeneralInfo" countMeasureName="%COUNT" bucketSize="8" bitmapChunkInMemory="false" precompute="0" disableListingGroups="false">
+  <dimension name="author" displayName="Автор" disabled="false" hasAll="false" allCaption="All author" allDisplayName="author" type="data" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="author" displayName="автор" disabled="false" sourceProperty="author" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+    </hierarchy>
+  </dimension>
+  <dimension name="habrId" displayName="Статьи" disabled="false" hasAll="false" allCaption="All habrId" allDisplayName="habrId" type="data" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="habrId" displayName="статьи" disabled="false" sourceProperty="habrId" list="false" useDisplayValue="true" useAsFilter="true">
+        <property name="name" displayName="статьи" disabled="false" sourceExpression="$e(%source.name,1,25)" hidden="false" isName="true" isDescription="false" isReference="false" useDisplayValue="true">
+        </property>
+      </level>
+    </hierarchy>
+  </dimension>
+  <dimension name="hubs" displayName="Хабы" disabled="false" hasAll="false" allCaption="All hubs" allDisplayName="hubs" type="data" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="hubs" displayName="хабы" disabled="false" sourceProperty="hubs" list="true" useDisplayValue="true" useAsFilter="true">
+      </level>
+    </hierarchy>
+  </dimension>
+  <dimension name="dateOfCreation" displayName="Дата создания" disabled="false" hasAll="false" allCaption="All dateOfCreation" allDisplayName="dateOfCreation" sourceProperty="dateOfCreation" type="time" calendar="gregorian" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="dateOfCreation" displayName="год создания" disabled="false" timeFunction="Year" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+      <level name="dateOfCreation1" displayName="месяц создания" disabled="false" timeFunction="MonthNumber" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+      <level name="dateOfCreation2" displayName="день создания" disabled="false" timeFunction="DayNumber" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+    </hierarchy>
+  </dimension>
+  <dimension name="dateOfPublication" displayName="Дата публикации" disabled="false" hasAll="false" allCaption="All dateOfPublication" allDisplayName="dateOfPublication" sourceProperty="dateOfPublication" type="time" calendar="gregorian" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="dateOfPublication" displayName="Год публикации" disabled="false" timeFunction="Year" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+      <level name="dateOfPublication1" displayName="Месяц публикации" disabled="false" timeFunction="MonthNumber" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+      <level name="dateOfPublication2" displayName="День публикации" disabled="false" timeFunction="DayNumber" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+    </hierarchy>
+  </dimension>
+  <dimension name="dateOfPublication1" displayName="Дата публикации  " disabled="false" hasAll="false" allCaption="All dateOfPublication1" allDisplayName="dateOfPublication1" sourceProperty="dateOfPublication" type="time" calendar="gregorian" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="dateOfPublication" displayName="мм-гггг" disabled="false" timeFunction="MonthYear" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+    </hierarchy>
+  </dimension>
+  <dimension name="author_views" displayName="Автор" description="автор" disabled="false" hasAll="false" allCaption="All author1" allDisplayName="author1" type="data" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="author" displayName="автор" disabled="false" sourceProperty="author" list="false" useDisplayValue="true" useAsFilter="true">
+      </level>
+      <level name="habrId" displayName="статьи" disabled="false" sourceProperty="habrId" list="false" useDisplayValue="true" useAsFilter="true">
+        <property name="name" displayName="статьи" disabled="false" sourceExpression="$e(%source.name,1,25)" hidden="false" isName="true" isDescription="false" isReference="false" useDisplayValue="true">
+        </property>
+      </level>
+    </hierarchy>
+  </dimension>
+  <dimension name="DMYOfPublication" disabled="false" hasAll="true" allCaption="All dateOfPublication2" allDisplayName="dateOfPublication2" sourceProperty="dateOfPublication" type="time" calendar="gregorian" iKnowType="entity" hidden="false" showHierarchies="default">
+    <hierarchy name="H1" disabled="false">
+      <level name="DayMonthYear" disabled="false" timeFunction="DayMonthYear" list="false" useDisplayValue="true" useAsFilter="true">
+        <additionalDescription>undefined</additionalDescription>
+      </level>
+    </hierarchy>
+    <additionalDescription>undefined</additionalDescription>
+  </dimension>
+  <measure name="votes" displayName="голоса" disabled="false" sourceProperty="votes" aggregate="SUM" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="views" displayName="просмотры" disabled="false" sourceProperty="views" aggregate="SUM" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="rating" displayName="рейтинг" disabled="false" sourceProperty="rating" aggregate="SUM" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="favorites" displayName="избранное" disabled="false" sourceProperty="favorites" aggregate="SUM" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="comments" displayName="комментарии " disabled="false" sourceProperty="comments" aggregate="SUM" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="habrId" displayName="количество статей" disabled="false" sourceProperty="habrId" aggregate="COUNT" type="integer" hidden="false" searchable="false">
+  </measure>
+  <measure name="views1" displayName="просмотры (тыс.)" disabled="false" sourceExpression="%source.views / 1000" aggregate="SUM" type="number" hidden="false" searchable="false">
+  </measure>
+  <measure name="AuthorsAmount" displayName="количество авторов" disabled="false" sourceExpression="%cube.GetAuthorsCount()" aggregate="AVG" type="integer" hidden="false" searchable="false">
+    <additionalDescription>undefined</additionalDescription>
+  </measure>
+  <calculatedMember name="тысяч просмотров на статью" disabled="false" dimension="Measures" valueExpression="[Measures].views1 / [Measures].habrId" hidden="false">
+  </calculatedMember>
+  <calculatedMember name="среднее число просмотров на статью" disabled="false" dimension="Measures" valueExpression="[Measures].views / [Measures].habrId / 1000" hidden="false">
+  </calculatedMember>
+  <calculatedMember name="среднее число комментариев на статью" disabled="false" dimension="Measures" valueExpression="[Measures].comments / [Measures].habrId" hidden="false">
+  </calculatedMember>
+  <calculatedMember name="средний рейтинг на статью" disabled="false" dimension="Measures" valueExpression="[Measures].rating / [Measures].habrId" hidden="false">
+  </calculatedMember>
+  <calculatedMember name="среднее число голосов на статью" disabled="false" dimension="Measures" valueExpression="[Measures].votes / [Measures].habrId" hidden="false">
+  </calculatedMember>
+  <calculatedMember name="среднее число добавлений в избранное на статью" disabled="false" dimension="Measures" valueExpression="[Measures].favorites / [Measures].habrId" hidden="false">
+  </calculatedMember>
+  <listing name="список" disabled="false" listingType="table" fieldList="name,author,url">
+  </listing>
+</cube>
+]]></Data>
+</XData>
+
+<Parameter name="DOMAIN">
+</Parameter>
+</Class>
+</Export>
